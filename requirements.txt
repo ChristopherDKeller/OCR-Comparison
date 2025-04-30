@@ -1,0 +1,7 @@
+paddlepaddle
+paddleocr
+easyocr
+surya-ocr
+pytesseract
+Pillow
+opencv-python
