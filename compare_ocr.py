@@ -1,6 +1,8 @@
 import time
 import os
 from PIL import Image, ImageDraw, ImageFont
+import Levenshtein
+import re
 
 # OCR-Engines
 from surya.recognition import RecognitionPredictor
@@ -83,8 +85,8 @@ def run_surya(image):
     image_copy, text_lines, img_text_lines = draw_polygons_and_text(image, polygons, texts, font)
     new_image = create_extended_image_with_text(image_copy, img_text_lines, text_lines, font)
 
-    new_image.save(os.path.join(output_dir, 'result_surya.jpg'))
-    with open(os.path.join(output_dir, 'result_surya.txt'), 'w', encoding='utf-8') as f:
+    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_surya.jpg"))
+    with open(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_surya.txt"), 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_lines))
 
     return end - start, text_lines
@@ -107,8 +109,8 @@ def run_paddle(image_path):
     image_copy, text_lines, img_text_lines = draw_polygons_and_text(image, boxes, texts, font)
     new_image = create_extended_image_with_text(image_copy, img_text_lines, text_lines, font)
 
-    new_image.save(os.path.join(output_dir, 'result_paddle.jpg'))
-    with open(os.path.join(output_dir, 'result_paddle.txt'), 'w', encoding='utf-8') as f:
+    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_paddle.jpg"))
+    with open(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_paddle.txt"), 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_lines))
 
     return end - start, text_lines
@@ -125,8 +127,8 @@ def run_easyocr(image_path):
     image_copy, text_lines, img_text_lines = draw_polygons_and_text(image, polygons, texts, font)
     new_image = create_extended_image_with_text(image_copy, img_text_lines, text_lines, font)
 
-    new_image.save(os.path.join(output_dir, 'result_easy.jpg'))
-    with open(os.path.join(output_dir, 'result_easy.txt'), 'w', encoding='utf-8') as f:
+    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_easy.jpg"))
+    with open(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_easy.txt"), 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_lines))
 
     return end - start, text_lines
@@ -153,24 +155,71 @@ def run_tesseract(image_path):
     image_copy, text_lines, img_text_lines = draw_polygons_and_text(image, polygons, texts, font)
     new_image = create_extended_image_with_text(image_copy, img_text_lines, text_lines, font)
 
-    new_image.save(os.path.join(output_dir, 'result_tesseract.jpg'))
-    with open(os.path.join(output_dir, 'result_tesseract.txt'), 'w', encoding='utf-8') as f:
+    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_tesseract.jpg"))
+    with open(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_tesseract.txt"), 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_lines))
 
     return end - start, text_lines
 
+def remove_suffix(file_path):
+    return os.path.splitext(os.path.basename(file_path))[0]
+
+# Error Rate Funktionen
+
+def normalize_text(text):
+    text = text.lower()
+    text = re.sub(r'[^\x20-\x7EäöüÄÖÜß\s]', '', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+def calculate_cer(reference, hypothesis):
+    ref = normalize_text(reference).replace(" ", "")
+    hyp = normalize_text(hypothesis).replace(" ", "")
+    return Levenshtein.distance(ref, hyp) / max(1, len(ref))
+
+def calculate_wer(reference, hypothesis):
+    ref_words = normalize_text(reference).split()
+    hyp_words = normalize_text(hypothesis).split()
+    ref_str = ' '.join(ref_words)
+    hyp_str = ' '.join(hyp_words)
+    return Levenshtein.distance(ref_str, hyp_str) / max(1, len(ref_words))
+
 def main():
     start = time.time()
     print("Running OCR comparison...\n")
+
+    with open('input/ground_truth_01.txt', encoding='utf-8') as f:
+        ground_truth = f.read().strip()
+
     surya_time, surya_text = run_surya(image)
     paddle_time, paddle_text = run_paddle(input_image_path)
     easy_time, easy_text = run_easyocr(input_image_path)
     tesseract_time, tesseract_text = run_tesseract(input_image_path)
 
-    print(f"Surya OCR completed in {surya_time:.2f} seconds.")
-    print(f"PaddleOCR completed in {paddle_time:.2f} seconds.")
-    print(f"EasyOCR completed in {easy_time:.2f} seconds.")
-    print(f"TesseractOCR completed in {tesseract_time:.2f} seconds.")
+    # Text zu einem String zusammenfassen
+    surya_result = ' '.join(surya_text)
+    paddle_result = ' '.join(paddle_text)
+    easy_result = ' '.join(easy_text)
+    tesseract_result = ' '.join(tesseract_text)
+
+    # Normalisierte Texte speichern
+    def save_normalised(name, result):
+        normalised = normalize_text(result)
+        
+        filename = f'output/normalised_{remove_suffix(input_image_path)}_{name}.txt'
+        with open(filename, 'w', encoding='utf-8') as f:
+            f.write(normalised)
+
+    save_normalised('surya', surya_result)
+    save_normalised('paddle', paddle_result)
+    save_normalised('easyocr', easy_result)
+    save_normalised('tesseract', tesseract_result)
+
+    # Metriken berechnen
+    print(f"Surya OCR:    Time: {surya_time:.2f}s | CER: {calculate_cer(ground_truth, surya_result):.3f} | WER: {calculate_wer(ground_truth, surya_result):.3f}")
+    print(f"PaddleOCR:    Time: {paddle_time:.2f}s | CER: {calculate_cer(ground_truth, paddle_result):.3f} | WER: {calculate_wer(ground_truth, paddle_result):.3f}")
+    print(f"EasyOCR:      Time: {easy_time:.2f}s | CER: {calculate_cer(ground_truth, easy_result):.3f} | WER: {calculate_wer(ground_truth, easy_result):.3f}")
+    print(f"TesseractOCR: Time: {tesseract_time:.2f}s | CER: {calculate_cer(ground_truth, tesseract_result):.3f} | WER: {calculate_wer(ground_truth, tesseract_result):.3f}")
 
     end = time.time()
     total_time = end - start

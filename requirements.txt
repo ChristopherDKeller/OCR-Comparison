@@ -5,3 +5,4 @@ surya-ocr
 pytesseract
 Pillow
 opencv-python
+python-Levenshtein
