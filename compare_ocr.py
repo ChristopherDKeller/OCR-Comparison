@@ -3,6 +3,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 import Levenshtein
 import re
+import numpy as np
 
 # OCR-Engines
 from surya.recognition import RecognitionPredictor
@@ -168,21 +169,53 @@ def remove_suffix(file_path):
 
 def normalize_text(text):
     text = text.lower()
+    text = text.replace('…', '...')
+    # Gepunktete Linien für z.B. Unterschriften entfernen, da Inhaltlich irrelevant
+    text = re.sub(r'\.{4,}', ' ', text)
     text = re.sub(r'[^\x20-\x7EäöüÄÖÜß\s]', '', text)
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
 def calculate_cer(reference, hypothesis):
+    # Entferne Leerzeichen, da nur Zeichenerkennung und nciht Worttrennung relevant sind
     ref = normalize_text(reference).replace(" ", "")
     hyp = normalize_text(hypothesis).replace(" ", "")
-    return Levenshtein.distance(ref, hyp) / max(1, len(ref))
+    return Levenshtein.distance(ref, hyp) / len(ref)
 
 def calculate_wer(reference, hypothesis):
-    ref_words = normalize_text(reference).split()
-    hyp_words = normalize_text(hypothesis).split()
-    ref_str = ' '.join(ref_words)
-    hyp_str = ' '.join(hyp_words)
-    return Levenshtein.distance(ref_str, hyp_str) / max(1, len(ref_words))
+    ref_words = reference.split()
+    hyp_words = hypothesis.split()
+    # Initialize a matrix with size |ref_words|+1 x |hyp_words|+1
+    # The extra row and column are for the case when one of the strings is empty
+    d = np.zeros((len(ref_words) + 1, len(hyp_words) + 1))
+    # The number of operations for an empty hypothesis to become the reference
+    # is just the number of words in the reference (i.e., deleting all words)
+    for i in range(len(ref_words) + 1):
+        d[i, 0] = i
+    # The number of operations for an empty reference to become the hypothesis
+    # is just the number of words in the hypothesis (i.e., inserting all words)
+    for j in range(len(hyp_words) + 1):
+        d[0, j] = j
+    # Iterate over the words in the reference and hypothesis
+    for i in range(1, len(ref_words) + 1):
+        for j in range(1, len(hyp_words) + 1):
+            # If the current words are the same, no operation is needed
+            # So we just take the previous minimum number of operations
+            if ref_words[i - 1] == hyp_words[j - 1]:
+                d[i, j] = d[i - 1, j - 1]
+            else:
+                # If the words are different, we consider three operations:
+                # substitution, insertion, and deletion
+                # And we take the minimum of these three possibilities
+                substitution = d[i - 1, j - 1] + 1
+                insertion = d[i, j - 1] + 1
+                deletion = d[i - 1, j] + 1
+                d[i, j] = min(substitution, insertion, deletion)
+    # The minimum number of operations to transform the hypothesis into the reference
+    # is in the bottom-right cell of the matrix
+    # We divide this by the number of words in the reference to get the WER
+    wer = d[len(ref_words), len(hyp_words)] / len(ref_words)
+    return wer
 
 def main():
     start = time.time()
@@ -191,39 +224,48 @@ def main():
     with open('input/ground_truth_01.txt', encoding='utf-8') as f:
         ground_truth = f.read().strip()
 
-    surya_time, surya_text = run_surya(image)
-    paddle_time, paddle_text = run_paddle(input_image_path)
-    easy_time, easy_text = run_easyocr(input_image_path)
-    tesseract_time, tesseract_text = run_tesseract(input_image_path)
+    results = {}
 
-    # Text zu einem String zusammenfassen
-    surya_result = ' '.join(surya_text)
-    paddle_result = ' '.join(paddle_text)
-    easy_result = ' '.join(easy_text)
-    tesseract_result = ' '.join(tesseract_text)
+    if "surya" in ENABLED_OCR_TOOLS:
+        surya_time, surya_text = run_surya(image)
+        result_text = ' '.join(surya_text)
+        results["surya"] = (surya_time, result_text)
 
-    # Normalisierte Texte speichern
-    def save_normalised(name, result):
-        normalised = normalize_text(result)
-        
+    if "paddle" in ENABLED_OCR_TOOLS:
+        paddle_time, paddle_text = run_paddle(input_image_path)
+        result_text = ' '.join(paddle_text)
+        results["paddle"] = (paddle_time, result_text)
+
+    if "easyocr" in ENABLED_OCR_TOOLS:
+        easy_time, easy_text = run_easyocr(input_image_path)
+        result_text = ' '.join(easy_text)
+        results["easyocr"] = (easy_time, result_text)
+
+    if "tesseract" in ENABLED_OCR_TOOLS:
+        tesseract_time, tesseract_text = run_tesseract(input_image_path)
+        result_text = ' '.join(tesseract_text)
+        results["tesseract"] = (tesseract_time, result_text)
+
+    # Texte speichern und Metriken berechnen
+    for name, (elapsed_time, result_text) in results.items():
+        normalized = normalize_text(result_text)
         filename = f'output/normalised_{remove_suffix(input_image_path)}_{name}.txt'
         with open(filename, 'w', encoding='utf-8') as f:
-            f.write(normalised)
+            f.write(normalized)
 
-    save_normalised('surya', surya_result)
-    save_normalised('paddle', paddle_result)
-    save_normalised('easyocr', easy_result)
-    save_normalised('tesseract', tesseract_result)
+        cer_score = calculate_cer(ground_truth, result_text)
+        wer_score = calculate_wer(ground_truth, result_text)
+        print(f"{name.title():13}: Time: {elapsed_time:.2f}s | CER: {cer_score:.3f} | WER: {wer_score:.3f}")
 
-    # Metriken berechnen
-    print(f"Surya OCR:    Time: {surya_time:.2f}s | CER: {calculate_cer(ground_truth, surya_result):.3f} | WER: {calculate_wer(ground_truth, surya_result):.3f}")
-    print(f"PaddleOCR:    Time: {paddle_time:.2f}s | CER: {calculate_cer(ground_truth, paddle_result):.3f} | WER: {calculate_wer(ground_truth, paddle_result):.3f}")
-    print(f"EasyOCR:      Time: {easy_time:.2f}s | CER: {calculate_cer(ground_truth, easy_result):.3f} | WER: {calculate_wer(ground_truth, easy_result):.3f}")
-    print(f"TesseractOCR: Time: {tesseract_time:.2f}s | CER: {calculate_cer(ground_truth, tesseract_result):.3f} | WER: {calculate_wer(ground_truth, tesseract_result):.3f}")
+    total_time = time.time() - start
+    print(f"\nFinished after {total_time:.2f} seconds. Results saved in /output/")
 
-    end = time.time()
-    total_time = end - start
-    print(f"\nFinished after {total_time: .2f} seconds. Results saved in /output/")
+ENABLED_OCR_TOOLS = [
+    "surya",
+    "paddle",
+    "easyocr",
+    "tesseract"
+]
 
 if __name__ == "__main__":
     main()
