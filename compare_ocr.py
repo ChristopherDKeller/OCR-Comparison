@@ -14,18 +14,16 @@ import pytesseract
 from pytesseract import Output
 
 # Paths
-input_image_path = 'input/ocr_test_01.png'
 font_path = 'fonts/arial.ttf'
 output_dir = 'output'
 
 os.makedirs(output_dir, exist_ok=True)
 
 # Globale Konfiguration
-image = Image.open(input_image_path).convert('RGB')
-font_size = 16
-line_spacing = 4
+font_size = 64
+line_spacing = 8
 line_height = font_size + line_spacing
-padding = 20
+padding = 40
 font = ImageFont.truetype(font_path, size=font_size)
 
 def get_text_properties(text_lines, font):
@@ -36,7 +34,11 @@ def get_text_properties(text_lines, font):
     for idx, line in enumerate(text_lines, 1):
         text = f"{idx}. {line}"
         dummy_draw.text((10, 10 + idx * line_height), text, fill='black', font=font)
-        text_width = dummy_draw.textlength(text, font=font)
+        try:
+            text_width = dummy_draw.textlength(text, font=font)
+        except ValueError:
+            print(f"Skipping line {idx} due to multiline issue: {repr(text)}")
+            continue
         max_text_width = max(max_text_width, text_width)
     
     return int(max_text_width), int(total_height)
@@ -68,11 +70,12 @@ def create_extended_image_with_text(base_image, img_text_lines, text_lines, font
     draw_new = ImageDraw.Draw(new_image)
 
     for i, line in enumerate(img_text_lines):
-        draw_new.text((10, base_image.height + i * line_height + padding), line, fill='black', font=font)
+        draw_new.text((40, base_image.height + i * line_height + padding), line, fill='black', font=font)
 
     return new_image
 
-def run_surya(image):
+def run_surya(image_path):
+    image = Image.open(image_path).convert('RGB')
     start = time.time()
     recognition_predictor = RecognitionPredictor()
     detection_predictor = DetectionPredictor()
@@ -86,13 +89,14 @@ def run_surya(image):
     image_copy, text_lines, img_text_lines = draw_polygons_and_text(image, polygons, texts, font)
     new_image = create_extended_image_with_text(image_copy, img_text_lines, text_lines, font)
 
-    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_surya.jpg"))
-    with open(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_surya.txt"), 'w', encoding='utf-8') as f:
+    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(image_path)}_surya.jpg"))
+    with open(os.path.join(output_dir, f"result_{remove_suffix(image_path)}_surya.txt"), 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_lines))
 
     return end - start, text_lines
 
 def run_paddle(image_path):
+    image = Image.open(image_path).convert('RGB')
     start = time.time()
     ocr = PaddleOCR(use_angle_cls=True, lang='german')
     results = ocr.ocr(image_path, cls=True)
@@ -110,13 +114,14 @@ def run_paddle(image_path):
     image_copy, text_lines, img_text_lines = draw_polygons_and_text(image, boxes, texts, font)
     new_image = create_extended_image_with_text(image_copy, img_text_lines, text_lines, font)
 
-    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_paddle.jpg"))
-    with open(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_paddle.txt"), 'w', encoding='utf-8') as f:
+    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(image_path)}_paddle.jpg"))
+    with open(os.path.join(output_dir, f"result_{remove_suffix(image_path)}_paddle.txt"), 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_lines))
 
     return end - start, text_lines
 
 def run_easyocr(image_path):
+    image = Image.open(image_path).convert('RGB')
     start = time.time()
     ocr = easyocr.Reader(['de', 'en'], gpu=False)
     result = ocr.readtext(image_path)
@@ -128,13 +133,14 @@ def run_easyocr(image_path):
     image_copy, text_lines, img_text_lines = draw_polygons_and_text(image, polygons, texts, font)
     new_image = create_extended_image_with_text(image_copy, img_text_lines, text_lines, font)
 
-    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_easy.jpg"))
-    with open(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_easy.txt"), 'w', encoding='utf-8') as f:
+    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(image_path)}_easy.jpg"))
+    with open(os.path.join(output_dir, f"result_{remove_suffix(image_path)}_easy.txt"), 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_lines))
 
     return end - start, text_lines
 
 def run_tesseract(image_path):
+    image = Image.open(image_path).convert('RGB')
     start = time.time()
     # bessere Ergebnisse mit '--oem 3 --psm 6'
     config = '-l deu+eng'
@@ -156,8 +162,8 @@ def run_tesseract(image_path):
     image_copy, text_lines, img_text_lines = draw_polygons_and_text(image, polygons, texts, font)
     new_image = create_extended_image_with_text(image_copy, img_text_lines, text_lines, font)
 
-    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_tesseract.jpg"))
-    with open(os.path.join(output_dir, f"result_{remove_suffix(input_image_path)}_tesseract.txt"), 'w', encoding='utf-8') as f:
+    new_image.save(os.path.join(output_dir, f"result_{remove_suffix(image_path)}_tesseract.jpg"))
+    with open(os.path.join(output_dir, f"result_{remove_suffix(image_path)}_tesseract.txt"), 'w', encoding='utf-8') as f:
         f.write('\n'.join(text_lines))
 
     return end - start, text_lines
@@ -177,88 +183,79 @@ def normalize_text(text):
     return text
 
 def calculate_cer(reference, hypothesis):
-    # Entferne Leerzeichen, da nur Zeichenerkennung und nciht Worttrennung relevant sind
+    # Entferne Leerzeichen, da hier nur Zeichenerkennung und nciht Worttrennung relevant sind
     ref = normalize_text(reference).replace(" ", "")
     hyp = normalize_text(hypothesis).replace(" ", "")
     return Levenshtein.distance(ref, hyp) / len(ref)
 
 def calculate_wer(reference, hypothesis):
+    # Siehe https://thepythoncode.com/article/calculate-word-error-rate-in-python
     ref_words = reference.split()
     hyp_words = hypothesis.split()
-    # Initialize a matrix with size |ref_words|+1 x |hyp_words|+1
-    # The extra row and column are for the case when one of the strings is empty
     d = np.zeros((len(ref_words) + 1, len(hyp_words) + 1))
-    # The number of operations for an empty hypothesis to become the reference
-    # is just the number of words in the reference (i.e., deleting all words)
     for i in range(len(ref_words) + 1):
         d[i, 0] = i
-    # The number of operations for an empty reference to become the hypothesis
-    # is just the number of words in the hypothesis (i.e., inserting all words)
     for j in range(len(hyp_words) + 1):
         d[0, j] = j
-    # Iterate over the words in the reference and hypothesis
     for i in range(1, len(ref_words) + 1):
         for j in range(1, len(hyp_words) + 1):
-            # If the current words are the same, no operation is needed
-            # So we just take the previous minimum number of operations
             if ref_words[i - 1] == hyp_words[j - 1]:
                 d[i, j] = d[i - 1, j - 1]
             else:
-                # If the words are different, we consider three operations:
-                # substitution, insertion, and deletion
-                # And we take the minimum of these three possibilities
                 substitution = d[i - 1, j - 1] + 1
                 insertion = d[i, j - 1] + 1
                 deletion = d[i - 1, j] + 1
                 d[i, j] = min(substitution, insertion, deletion)
-    # The minimum number of operations to transform the hypothesis into the reference
-    # is in the bottom-right cell of the matrix
-    # We divide this by the number of words in the reference to get the WER
     wer = d[len(ref_words), len(hyp_words)] / len(ref_words)
     return wer
 
-def main():
-    start = time.time()
-    print("Running OCR comparison...\n")
-
-    with open('input/ground_truth_01.txt', encoding='utf-8') as f:
+def ocr(image_path):
+    with open(f"{image_path.rsplit('_',1)[0]}.txt", encoding='utf-8') as f:
         ground_truth = f.read().strip()
 
     results = {}
 
     if "surya" in ENABLED_OCR_TOOLS:
-        surya_time, surya_text = run_surya(image)
+        surya_time, surya_text = run_surya(image_path)
         result_text = ' '.join(surya_text)
         results["surya"] = (surya_time, result_text)
 
     if "paddle" in ENABLED_OCR_TOOLS:
-        paddle_time, paddle_text = run_paddle(input_image_path)
+        paddle_time, paddle_text = run_paddle(image_path)
         result_text = ' '.join(paddle_text)
         results["paddle"] = (paddle_time, result_text)
 
     if "easyocr" in ENABLED_OCR_TOOLS:
-        easy_time, easy_text = run_easyocr(input_image_path)
+        easy_time, easy_text = run_easyocr(image_path)
         result_text = ' '.join(easy_text)
         results["easyocr"] = (easy_time, result_text)
 
     if "tesseract" in ENABLED_OCR_TOOLS:
-        tesseract_time, tesseract_text = run_tesseract(input_image_path)
+        tesseract_time, tesseract_text = run_tesseract(image_path)
         result_text = ' '.join(tesseract_text)
         results["tesseract"] = (tesseract_time, result_text)
 
     # Texte speichern und Metriken berechnen
     for name, (elapsed_time, result_text) in results.items():
         normalized = normalize_text(result_text)
-        filename = f'output/normalised_{remove_suffix(input_image_path)}_{name}.txt'
+        filename = f'output/normalised_{remove_suffix(image_path)}_{name}.txt'
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(normalized)
 
         cer_score = calculate_cer(ground_truth, result_text)
         wer_score = calculate_wer(ground_truth, result_text)
-        print(f"{name.title():13}: Time: {elapsed_time:.2f}s | CER: {cer_score:.3f} | WER: {wer_score:.3f}")
+        print(f"{name.title():13}: Time: {elapsed_time:.2f}s | CER: {cer_score:.3f} | WER: {wer_score:.3f}")    
+
+def main():
+    start = time.time()
+    print("Running OCR comparison...\n")
+    input_dir = "input"
+    for filename in os.listdir(input_dir):
+        if filename.lower().endswith((".png", ".jpg", ".jpeg")):
+            ocr(f"{input_dir}/{filename}")
 
     total_time = time.time() - start
-    print(f"\nFinished after {total_time:.2f} seconds. Results saved in /output/")
+    print(f"\nFinished after {total_time:.2f} seconds.")
 
 ENABLED_OCR_TOOLS = [
     "surya",

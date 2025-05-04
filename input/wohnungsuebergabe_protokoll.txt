@@ -1,0 +1,82 @@
+Musterwohnen
+
+Wohnungsübergabe-Protokoll
+
+Bestandteil des Mietvertrags vom:
+
+Objekt:
+Musterstraße 12, 12345 Musterstadt, 2. Obergeschoss mitte rechts
+
+Mietobjekt-Nr:
+1401/184/485
+
+Vertrags-Nr:
+4500/1-0573-046295
+
+Mieterin/Mieter:
+Max Mustermann
+
+Vetragsbeginn:
+01.03.2022
+
+Bei der Besichtigung der Wohnung am 19.02.2022 wurden keine folgende Mängel festgestellt:
+
+In Ordnung
+
+Folgende Mängel wurden festgestellt:
+Bemerkungen:
+
+1. Diele/Flur
+ja
+Unbemalte/untapezierte Wände
+Wird noch gemacht
+
+2. Küche
+ja
+
+3. Bad/WC
+ja
+Gesprungene Fliese
+
+4. Wohnzimmer
+ja
+
+5. Balkon
+ja
+Abgeplatzter Putz
+
+6. Schlafzimmer
+ja
+
+7. Kinderzimmer
+ja
+Delle im Boden
+
+8. Keller
+ja
+
+9. Weitere Räume
+ja
+
+10. Garage
+ja
+
+Strom Zählernummer: 27601013569 Stand: 21099,8 kWh
+
+Gas Zählernummer: 11490618373186 Stand: 699,337 m³
+
+Wasser Zählernummer: 705826461 Stand: 7315,046 m³
+
+Zählernummer: 905803059 Stand: 2844,128 m³
+
+Bemerkungen - Sonstiges:
+Es wurden 3 Wohnungsschlüssel übergeben.
+
+Datum: 19.02.2022 Vermieter: V. Waltung
+(Unterschrift)
+
+Mieter: M. Mustermann
+(Unterschrift)
+
+Zeuge(n): John Doe, Musterallee 13, 12345 Musterstadt
+(Name/Anschrift)
