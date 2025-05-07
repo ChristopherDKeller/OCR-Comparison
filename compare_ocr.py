@@ -8,10 +8,16 @@ import numpy as np
 # OCR-Engines
 from surya.recognition import RecognitionPredictor
 from surya.detection import DetectionPredictor
+import paddle
 from paddleocr import PaddleOCR
 import easyocr
 import pytesseract
 from pytesseract import Output
+
+import torch
+
+print(torch.cuda.is_available())
+print(torch.cuda.get_device_name())
 
 # Paths
 font_path = 'fonts/arial.ttf'
@@ -96,11 +102,14 @@ def run_surya(image_path):
     return end - start, text_lines
 
 def run_paddle(image_path):
+    gpu_available  = paddle.device.is_compiled_with_cuda()
+    print("GPU available:", gpu_available)
     image = Image.open(image_path).convert('RGB')
     if(image_path.split('_')[0]=='untermietantrag'):
-        ocr = PaddleOCR(use_angle_cls=True, lang='en')
+        print('Englisch!')
+        ocr = PaddleOCR(use_angle_cls=True, lang='en', use_gpu=True)
     else:
-        ocr = PaddleOCR(use_angle_cls=True, lang='german')
+        ocr = PaddleOCR(use_angle_cls=True, lang='german', use_gpu=True)
 
     start = time.time()
     results = ocr.ocr(image_path, cls=True)
@@ -126,7 +135,7 @@ def run_paddle(image_path):
 
 def run_easyocr(image_path):
     image = Image.open(image_path).convert('RGB')
-    ocr = easyocr.Reader(['de', 'en'], gpu=False)
+    ocr = easyocr.Reader(['de', 'en'], gpu=True)
     start = time.time()
     result = ocr.readtext(image_path)
     end = time.time()
@@ -218,7 +227,6 @@ def ocr(image_path):
         ground_truth = f.read().strip()
 
     results = {}
-
     if "surya" in ENABLED_OCR_TOOLS:
         surya_time, surya_text = run_surya(image_path)
         result_text = ' '.join(surya_text)
@@ -239,6 +247,7 @@ def ocr(image_path):
         result_text = ' '.join(tesseract_text)
         results["tesseract"] = (tesseract_time, result_text)
 
+    print(f"Results for {image_path}")
     # Texte speichern und Metriken berechnen
     for name, (elapsed_time, result_text) in results.items():
         normalized = normalize_text(result_text)
@@ -255,6 +264,7 @@ def main():
     print("Running OCR comparison...\n")
     input_dir = "input"
     for filename in os.listdir(input_dir):
+        print(f"\nProcessing: {filename}")
         if filename.lower().endswith((".png", ".jpg", ".jpeg")):
             ocr(f"{input_dir}/{filename}")
 
