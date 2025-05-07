@@ -105,8 +105,10 @@ def run_paddle(image_path):
     gpu_available  = paddle.device.is_compiled_with_cuda()
     print("GPU available:", gpu_available)
     image = Image.open(image_path).convert('RGB')
-    if(image_path.split('_')[0]=='untermietantrag'):
-        print('Englisch!')
+
+    file_name = os.path.basename(image_path)
+    base_name = file_name.split('_')[0]
+    if base_name =='untermietantrag':
         ocr = PaddleOCR(use_angle_cls=True, lang='en', use_gpu=True)
     else:
         ocr = PaddleOCR(use_angle_cls=True, lang='german', use_gpu=True)
