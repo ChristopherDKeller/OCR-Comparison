@@ -97,8 +97,11 @@ def run_surya(image_path):
 
 def run_paddle(image_path):
     image = Image.open(image_path).convert('RGB')
-    if(image_path.split('_')[0]=='untermietantrag'):
-        ocr = PaddleOCR(use_angle_cls=True, lang='en')
+
+    file_name = os.path.basename(image_path)
+    base_name = file_name.split('_')[0]
+    if base_name =='untermietantrag':
+        ocr = PaddleOCR(use_angle_cls=True, lang='en', use_gpu=True)
     else:
         ocr = PaddleOCR(use_angle_cls=True, lang='german')
 
