@@ -76,10 +76,10 @@ def create_extended_image_with_text(base_image, img_text_lines, text_lines, font
 
 def run_surya(image_path):
     image = Image.open(image_path).convert('RGB')
-    start = time.time()
     recognition_predictor = RecognitionPredictor()
     detection_predictor = DetectionPredictor()
     langs = ['de', 'en']
+    start = time.time()
     result = recognition_predictor([image], [langs], detection_predictor)
     end = time.time()
 
@@ -97,8 +97,12 @@ def run_surya(image_path):
 
 def run_paddle(image_path):
     image = Image.open(image_path).convert('RGB')
+    if(image_path.split('_')[0]=='untermietantrag'):
+        ocr = PaddleOCR(use_angle_cls=True, lang='en')
+    else:
+        ocr = PaddleOCR(use_angle_cls=True, lang='german')
+
     start = time.time()
-    ocr = PaddleOCR(use_angle_cls=True, lang='german')
     results = ocr.ocr(image_path, cls=True)
     end = time.time()
 
@@ -122,8 +126,8 @@ def run_paddle(image_path):
 
 def run_easyocr(image_path):
     image = Image.open(image_path).convert('RGB')
-    start = time.time()
     ocr = easyocr.Reader(['de', 'en'], gpu=False)
+    start = time.time()
     result = ocr.readtext(image_path)
     end = time.time()
 
@@ -141,10 +145,10 @@ def run_easyocr(image_path):
 
 def run_tesseract(image_path):
     image = Image.open(image_path).convert('RGB')
-    start = time.time()
     # bessere Ergebnisse mit '--oem 3 --psm 6'
     config = '-l deu+eng'
 
+    start = time.time()
     data = pytesseract.image_to_data(image_path, config=config, output_type=Output.DICT)
     end = time.time()
 
