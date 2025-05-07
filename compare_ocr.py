@@ -101,7 +101,7 @@ def run_paddle(image_path):
     file_name = os.path.basename(image_path)
     base_name = file_name.split('_')[0]
     if base_name =='untermietantrag':
-        ocr = PaddleOCR(use_angle_cls=True, lang='en', use_gpu=True)
+        ocr = PaddleOCR(use_angle_cls=True, lang='en')
     else:
         ocr = PaddleOCR(use_angle_cls=True, lang='german')
 
