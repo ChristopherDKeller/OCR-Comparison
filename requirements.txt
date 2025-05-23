@@ -1,4 +1,5 @@
 paddlepaddle
+paddlepaddle-gpu
 paddleocr
 easyocr
 surya-ocr

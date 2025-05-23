@@ -8,10 +8,16 @@ import numpy as np
 # OCR-Engines
 from surya.recognition import RecognitionPredictor
 from surya.detection import DetectionPredictor
+import paddle
 from paddleocr import PaddleOCR
 import easyocr
 import pytesseract
 from pytesseract import Output
+
+import torch
+
+print(torch.cuda.is_available())
+print(torch.cuda.get_device_name())
 
 # Paths
 font_path = 'fonts/arial.ttf'
@@ -33,12 +39,9 @@ def get_text_properties(text_lines, font):
     total_height = len(text_lines) * line_height
     for idx, line in enumerate(text_lines, 1):
         text = f"{idx}. {line}"
-        dummy_draw.text((10, 10 + idx * line_height), text, fill='black', font=font)
-        try:
-            text_width = dummy_draw.textlength(text, font=font)
-        except ValueError:
-            print(f"Skipping line {idx} due to multiline issue: {repr(text)}")
-            continue
+        text = re.sub(r'\n', ' ', text)
+        dummy_draw.text((0, idx * line_height + padding * 2), text, fill='black', font=font)
+        text_width = dummy_draw.textlength(text, font=font)
         max_text_width = max(max_text_width, text_width)
     
     return int(max_text_width), int(total_height)
@@ -65,12 +68,13 @@ def create_extended_image_with_text(base_image, img_text_lines, text_lines, font
     """Erzeugt ein erweitertes Bild mit Text darunter."""
     text_width, text_height = get_text_properties(text_lines, font)
 
-    new_image = Image.new('RGB', (max(text_width, base_image.width), base_image.height + text_height + padding), color='white')
+    new_image = Image.new('RGB', (max(text_width + padding, base_image.width), base_image.height + text_height + padding), color='white')
     new_image.paste(base_image, (0, 0))
     draw_new = ImageDraw.Draw(new_image)
 
     for i, line in enumerate(img_text_lines):
-        draw_new.text((40, base_image.height + i * line_height + padding), line, fill='black', font=font)
+        line = re.sub(r'\n', ' ', line)
+        draw_new.text((padding, base_image.height + i * line_height + padding), line, fill='black', font=font)
 
     return new_image
 
@@ -101,9 +105,9 @@ def run_paddle(image_path):
     file_name = os.path.basename(image_path)
     base_name = file_name.split('_')[0]
     if base_name =='untermietantrag':
-        ocr = PaddleOCR(use_angle_cls=True, lang='en')
+        ocr = PaddleOCR(use_angle_cls=True, lang='en', use_gpu=True)
     else:
-        ocr = PaddleOCR(use_angle_cls=True, lang='german')
+        ocr = PaddleOCR(use_angle_cls=True, lang='german', use_gpu=True)
 
     start = time.time()
     results = ocr.ocr(image_path, cls=True)
@@ -129,7 +133,7 @@ def run_paddle(image_path):
 
 def run_easyocr(image_path):
     image = Image.open(image_path).convert('RGB')
-    ocr = easyocr.Reader(['de', 'en'], gpu=False)
+    ocr = easyocr.Reader(['de', 'en'], gpu=True)
     start = time.time()
     result = ocr.readtext(image_path)
     end = time.time()
@@ -183,16 +187,18 @@ def remove_suffix(file_path):
 def normalize_text(text):
     text = text.lower()
     text = text.replace('…', '...')
-    # Gepunktete Linien für z.B. Unterschriften entfernen, da Inhaltlich irrelevant
+    # Gepunktete/gestrichelte Linien für z.B. Unterschriften entfernen, da Inhaltlich irrelevant
     text = re.sub(r'\.{4,}', ' ', text)
+    text = re.sub(r'\_{4,}', ' ', text)
+    text = re.sub(r'\-{4,}', ' ', text)
     text = re.sub(r'[^\x20-\x7EäöüÄÖÜß\s]', '', text)
     text = re.sub(r'\s+', ' ', text).strip()
     return text
 
 def calculate_cer(reference, hypothesis):
-    # Entferne Leerzeichen, da hier nur Zeichenerkennung und nciht Worttrennung relevant sind
-    ref = normalize_text(reference).replace(" ", "")
-    hyp = normalize_text(hypothesis).replace(" ", "")
+    # Entferne Leerzeichen, da hier nur Zeichenerkennung und nicht Worttrennung relevant sind
+    ref = reference.replace(" ", "")
+    hyp = hypothesis.replace(" ", "")
     return Levenshtein.distance(ref, hyp) / len(ref)
 
 def calculate_wer(reference, hypothesis):
@@ -222,35 +228,37 @@ def ocr(image_path):
 
     results = {}
 
-    if "surya" in ENABLED_OCR_TOOLS:
-        surya_time, surya_text = run_surya(image_path)
-        result_text = ' '.join(surya_text)
-        results["surya"] = (surya_time, result_text)
+    if "easyocr" in ENABLED_OCR_TOOLS:
+        easy_time, easy_text = run_easyocr(image_path)
+        result_text = ' '.join(easy_text)
+        results["easyocr"] = (easy_time, result_text)
 
     if "paddle" in ENABLED_OCR_TOOLS:
         paddle_time, paddle_text = run_paddle(image_path)
         result_text = ' '.join(paddle_text)
         results["paddle"] = (paddle_time, result_text)
 
-    if "easyocr" in ENABLED_OCR_TOOLS:
-        easy_time, easy_text = run_easyocr(image_path)
-        result_text = ' '.join(easy_text)
-        results["easyocr"] = (easy_time, result_text)
-
     if "tesseract" in ENABLED_OCR_TOOLS:
         tesseract_time, tesseract_text = run_tesseract(image_path)
         result_text = ' '.join(tesseract_text)
         results["tesseract"] = (tesseract_time, result_text)
 
+    if "surya" in ENABLED_OCR_TOOLS:
+        surya_time, surya_text = run_surya(image_path)
+        result_text = ' '.join(surya_text)
+        results["surya"] = (surya_time, result_text)
+
+    print(f"Results for {image_path}")
     # Texte speichern und Metriken berechnen
     for name, (elapsed_time, result_text) in results.items():
         normalized = normalize_text(result_text)
+        normalized_gt = normalize_text(ground_truth)
         filename = f'output/normalised_{remove_suffix(image_path)}_{name}.txt'
         with open(filename, 'w', encoding='utf-8') as f:
-            f.write(normalized)
+            f.write('Reference:\n'+ normalized + '\nHypothesis:\n' + normalized_gt)
 
-        cer_score = calculate_cer(ground_truth, result_text)
-        wer_score = calculate_wer(ground_truth, result_text)
+        cer_score = calculate_cer(normalized_gt, normalized)
+        wer_score = calculate_wer(normalized_gt, normalized)
         print(f"{name.title():13}: Time: {elapsed_time:.2f}s | CER: {cer_score:.3f} | WER: {wer_score:.3f}")    
 
 def main():
@@ -258,6 +266,7 @@ def main():
     print("Running OCR comparison...\n")
     input_dir = "input"
     for filename in os.listdir(input_dir):
+        print(f"\nProcessing: {filename}")
         if filename.lower().endswith((".png", ".jpg", ".jpeg")):
             ocr(f"{input_dir}/{filename}")
 
