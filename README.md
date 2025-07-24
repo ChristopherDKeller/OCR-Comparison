@@ -59,3 +59,7 @@ Im Skript konfigurierbar:
 ```python
 ENABLED_OCR_TOOLS = ["surya", "paddle", "easyocr", "tesseract"]
 ```
+
+## Ergebnisse
+
+Die Testergebnisse und berechnung der Endergebnisse sind unter `result/` in einer Excel-Datei erfasst.
