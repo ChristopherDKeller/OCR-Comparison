@@ -62,4 +62,4 @@ ENABLED_OCR_TOOLS = ["surya", "paddle", "easyocr", "tesseract"]
 
 ## Ergebnisse
 
-Die Testergebnisse und berechnung der Endergebnisse sind unter `result/` in einer Excel-Datei erfasst.
+Die Testergebnisse sind in einer CSV-Datei un die berechnung der Endergebnisse sind in einer Excel-Datei unter `result/` erfasst. Die Datei `result/ocr_auswertung.py` dient der Erstellung von Plots.
