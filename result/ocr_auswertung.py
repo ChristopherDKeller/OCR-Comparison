@@ -19,33 +19,20 @@ def extrahiere_qualitaet(dokument_name):
 # Neue Spalte für Qualitätsstufe
 df["Qualität"] = df["Dokument"].apply(extrahiere_qualitaet)
 
-# Plot-Funktion
-def plot_metrics(df, qualitätsstufe):
+def plot_metric(df, qualitätsstufe, metric, title, ylabel):
     daten = df[df["Qualität"] == qualitätsstufe]
-    
-    fig, axs = plt.subplots(1, 3, figsize=(18, 5))
-    fig.suptitle(f"OCR Tool Performance - {qualitätsstufe}", fontsize=16)
+    plt.figure(figsize=(5, 5))
+    seaborn.barplot(data=daten, x="Tool", y=metric)
+    plt.title(f"{title} - {qualitätsstufe}")
+    plt.ylabel(ylabel)
+    plt.xlabel("")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+    plt.show()
 
-    seaborn.barplot(data=daten, x="Tool", y="Zeit", ax=axs[0])
-    axs[0].set_title("Verarbeitungszeit (s)")
-    axs[0].set_ylabel("Sekunden")
-
-    seaborn.barplot(data=daten, x="Tool", y="CER", ax=axs[1])
-    axs[1].set_title("Character Error Rate (CER)")
-    axs[1].set_ylabel("CER")
-
-    seaborn.barplot(data=daten, x="Tool", y="WER", ax=axs[2])
-    axs[2].set_title("Word Error Rate (WER)")
-    axs[2].set_ylabel("WER")
-
-    for ax in axs:
-        ax.set_xlabel("")
-        ax.tick_params(axis='x', rotation=45)
-
-    plt.tight_layout(rect=[0, 0, 1, 0.95])
-    return fig
-
-# Plots
 qualitätsstufen = df["Qualität"].unique()
-figuren = [plot_metrics(df, qualität) for qualität in qualitätsstufen]
-plt.show()
+
+for qualität in qualitätsstufen:
+    plot_metric(df, qualität, "Zeit", "Verarbeitungszeit (s)", "Sekunden")
+    plot_metric(df, qualität, "CER", "Character Error Rate (CER)", "CER")
+    plot_metric(df, qualität, "WER", "Word Error Rate (WER)", "WER")
