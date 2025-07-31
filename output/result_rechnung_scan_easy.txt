@@ -1,0 +1,146 @@
+slektro
+Elektro Mustermann
+dlustermann
+Musterstraßse 1
+123456 Musterstadt
+Fax (07832) 995-155
+Tel: +49 123456 789-0
+Elekiro Mustermann
+Musterstraße
+123456 Musterstadt
+Firma
+Bei Zahlung bitte
+Ludwig Kunde GmbH
+Kunden-Nr. und Rechnungs-Nr, angeben:
+zHd. Herr Kunde
+Rechnung-Nr:
+400402
+Hauptstraße 1
+Kunden-Nr::
+00000001
+987651 Kundenstadt
+Rehnungsdatum:
+10.08.2021
+Ihr Auftrag vom:
+05,07.2021
+Ausführung:
+20.07.2021
+Unser Zeichen:
+STIWE
+Ihr Zeichen:
+93815/08152
+Seite:
+1 / 1
+Rechnung
+Pos.
+Bezeichnung
+Menge Einh.
+E-Preis €
+G-Preis €
+Auftragsbestätigung Beleg: 200036 vom: 05.07.2021
+Angebot Beleg: 100198 vom: 30.06.2021
+Materialaufwand:
+00001
+Wechselschalter APw
+2,00
+Stk
+12,24
+24,48
+00002
+Steckdose IF APw
+3,00
+Stk
+10,17
+30,51
+00003
+Abzweigdose 80x80 APw
+2,00
+Stk
+1,19
+2,38
+00004
+FR 22110020 Rohr isofix-EL-F 20
+12,00
+m
+0,97
+11,64
+00005
+Leitung NYM-J 3x1,5
+25,00
+m
+0,82
+20,50
+00006
+Leitung NYM-J 5x1,5
+15,00
+m
+1,21
+18,15
+00007
+Langfeldleuchte 1x58W
+2,00
+Stk
+51,79
+103,58
+00008
+Bewegungsmelder APw
+1,00
+Stk
+124,50
+124,50
+0oo09
+FR 22370020 Schelle clipfix 20
+35,00
+Stk
+0,44
+15,40
+Lohnaufwand:
+00010
+Monteur
+4,50
+Std
+39,80
+179,10
+00011
+Auszubildender
+4,50
+Std
+28,00
+126,00
+Vielen Dank für Ihren Auftrag.
+Warenwert Netto €
+FrachtlPorto €
+Verpackung €
+Stpfl. Betrag €
+Ust   19,00 %
+Steuerfrei €
+Endbetrag €
+656,24
+0,00
+0,00
+656,24
+124,69
+0,00
+780,93
+Zahlbar bis zum 17.08.2021 mit 2,00 % Skonto. Rechnungsbetrag nach Abzug Skonto 772,57 €
+Bei Zahlung bis zum 24.08.2021 ohne Abzug.
+Die Ware bleibt bis zur vollständigen Bezahlung unser Eigentum!
+nicht skontierfähig
+Sparkasse Musterstadt
+Volksbank Muster eG
+USt.-IdNr . DE 101778899
+Tel.: +49 123 456 789-0
+BLZ 123 456 78
+Kto.-Nr. 987 654
+BLZ 123 456 00
+~Nr. 987 654
+Steuer-Nr : 200/100/10001
+E-Mail: streit@streit-datec.de
+IBAN-Nr. DEO2 3456 1111 0000 1000 20
+IBAN-Nr. DE42 5566 2700 0000 7788 00
+HRB 123456 Registergericht Muster
+Internet: WWw streit-datec.de
+SWIFT-BIC: SOLADESIHAL
+SWIFT-BIC: GENODE6IKZT
+Geschäftsführer: Bernd Boss
+Kto.

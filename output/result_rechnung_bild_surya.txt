@@ -1,0 +1,133 @@
+flektro
+Elektro Mustermann
+chustermann
+Musterstraße 1 · 123456 Musterstadt · Fax (07832) 995-155 · Tel. +49 123 456 789-0
+Elektro Mustermann · Musterstraße 1 · 123456 Musterstadt
+Firma
+Bei Zahlung bitte
+Kunden-Nr. und Rechnungs-Nr. angeben:
+Ludwig Kunde GmbH
+z.Hd. Herr Kunde
+400402
+Rechnung-Nr:
+Hauptstraße 1
+00000001
+Kunden-Nr.:
+987651 Kundenstadt
+10.08.2021
+Rehnungsdatum:
+05.07.2021
+Ihr Auftrag vom:
+20.07.2021
+Ausführung:
+ST/WE
+Unser Zeichen:
+Ihr Zeichen:
+93815/08152
+Seite:
+11
+Rechnung
+Pos. Bezeichnung
+Menge Einh.
+E-Preis €
+G-Preis €
+Auftragsbestätigung Beleg: 200036 vom: 05.07.2021
+Angebot Beleg: 100198 vom: 30.06.2021
+Materialaufwand:
+00001
+Wechselschalter APw
+2,00 Stk
+12,24
+24,48
+00002
+Steckdose 1F APw
+3,00 Stk
+10,17
+30,51
+00003
+Abzweigdose 80x80 APw
+2,00
+Sik
+1,19
+2,38
+00004
+FR 22110020 Rohr isofix-EL-F 20
+12,00
+0,97
+m
+11,64
+00005
+Leitung NYM-J 3x1,5
+25,00
+0,82
+m
+20,50
+00006
+Leitung NYM-J 5x1,5
+15,00
+m
+1,21
+18,15
+00007
+Langfeldleuchte 1x58W
+2,00
+Stk
+51,79
+103,58
+00008
+Bewegungsmelder APw
+1,00
+Stk
+124,50
+124,50
+00009 FR 22370020 Schelle clipfix 20
+35,00 
+Stk
+0,44
+15,40
+Lohnaufwand:
+00010
+Monteur
+4,50 Std
+39,80
+179,10 *
+00011
+Auszubildender
+4,50 Std
+28,00
+126,00 *
+
+Vielen Dank für Ihren Auftrag.
+Warenwert Netto €
+Fracht/Porto €
+Verpackung €
+Stpfl. Betrag €
+Ust 19,00 %
+Steuerfrei €
+Endbetrag €
+656,24
+0,00
+0,00
+656,24
+124,69
+0,00
+780,93
+Zahlbar bis zum 17.08.2021 mit 2,00 % Skonto. Rechnungsbetrag nach Abzug Skonto 772,57 €.
+Bei Zahlung bis zum 24.08.2021 ohne Abzug.
+nde Ware bleibt bis zur vollständigen Bezahlung unser Eigentumi
+* = nicht skontierfähig
+Sparkasse Musterstadt
+Volksbank Muster eG
+USt .- IdNr. DE 101778899
+BLZ 123 456 78 · Kto .- Nr. 987 654
+Tel .: +49 123 456 789-0
+BLZ 123 456 00 Kto .- Nr. 987 654
+Steuer-Nr .: 200/100/10001
+IBAN-Nr. DE02 3456 1111 0000 1000 20
+E-Mail: streit@streit-datec.de
+IBAN-Nr. DE42 5566 2700 0000 7788 00
+HRB 123456 Registergericht Muster
+SWIFT-BIC: SOLADES 1HAL
+Internet: www.streit-datec.de
+SWIFT-BIC: GENODE61KZT
+Geschäftsführer: Bernd Boss

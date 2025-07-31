@@ -1,0 +1,146 @@
+flektro
+Elektro Mustermann
+dlustermann
+Musterstraße 1 . 123456 Musterstadt
+Fax (07832) 995-155
+Tel  +49 123 456 789-0
+Elektro Mustermann
+Musterstraße
+123456 Musterstadt
+Firma
+Bei Zahlung bitte
+Ludwig Kunde GmbH
+Kunden-Nr; und Rechnungs-Nr ,
+angeben;
+zHd. Herr Kunde
+Hauptstraße 1
+Rechnung-Nr:
+400402
+987651 Kundenstadt
+Kunden-Nr :
+000oooo1
+Rehnungsdatum:
+10.08.2021
+Ihr Auftrag vom:
+05,07,2021
+Ausfuhrung:
+20,07,2021
+Unser Zeichen:
+STIWE
+Ihr Zeichen:
+93815/08152
+Seite:
+1 / 1
+Rechnung
+Pos.
+Bezeichnung
+Menge   Einh.
+E-Preis €
+G-Preis €
+Auftragsbestätigung Beleg: 200036 vom: 05.07.2021
+Angebot Beleg: 100198 vom: 30.06.2021
+Materialaufwand:
+00001
+Wechselschalter APw
+2,00
+Stk
+12,24
+24,48
+00002
+Steckdose IF APw
+3,00
+Stk
+10,17
+30,51
+00003
+Abzweigdose 80x80 APw
+2,00
+Stk
+1,19
+2,38
+00004
+FR 22110020 Rohr isofix-EL-F 20
+12,00
+m
+0,97
+11,64
+00005   Leitung NYM-J 3x1,5
+25,00
+m
+0,82
+20,50
+00006   Leitung NYM-J 5x1,5
+15,00
+m
+1,21
+18,15
+000o7
+Langfeldleuchte 1x58W
+2,00
+Stk
+51,79
+103,58
+00008
+Bewegungsmelder APw
+1,00
+Stk
+124,50
+124,50
+oooo9
+FR 22370020 Schelle clipfix 20
+35,00
+Stk
+0,44
+15,40
+Lohnaufwand:
+0o010
+Monteur
+4,50
+Std
+39,80
+179,10
+00011
+Auszubildender
+4,50
+Std
+28,00
+126,00
+Vielen Dank für Ihren Auftrag:
+Warenwert Netto €
+FrachtlPorto
+Verpackung
+Stpfl: Betrag
+Ust   19,00 %
+Steuerfrei €
+Endbetrag €
+656,24
+0,00
+0,00
+656,24
+124,69
+0,00
+Zahlbar bis zum 17.08,.2021 mit 2,00 % Skonto. Rechnungsbetrag nach Abzug Skonto 772,57 €
+780,93
+Bei Zahlung bis zum 24.08.2021 ohne
+Die
+blelbt bls zur vollständlgen Bezahlung unser Elgentuml
+=
+nicht skontierfähig
+gpark2ssa Musterstad:
+Kto.-Nr. 987 654
+Bolksbanks6ueri
+'eG
+USt.-IdNr. DE 101778899
+Tel : +49 123 456 789-0
+IBAN-Nr; DEO2 3456 11110000 7000 20
+84/1123,458,90358 27098008547788 
+Steuer-Nr : 200/100/10001
+E-Mail: streit@streit-datec.de
+SWIFT-BIC: SOLADESIHAL
+SWIFT-BIC: GENODEGIKZT
+00
+HRB 123456 Registergericht Muster
+Internet: WWW streit-datec de
+Geschäftsführer: Bernd Boss
+Abzug.
+Ware

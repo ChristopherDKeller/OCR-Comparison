@@ -1,0 +1,107 @@
+Flektro
+Elektro Mustermann
+Mustermann
+Musterstrale1·123456 MusterstadtFax07832995-155·Tel.+49123456789-0
+Elektro Mustermann·Musterstrale1.123456 Musterstadt
+Firma
+Bei Zahlung bitte
+Ludwig Kunde GmbH
+Kunden-Nr.und Rechnungs-Nr.angeben:
+z.Hd.Herr Kunde
+Rechnung-Nr:
+400402
+HauptstraBe1
+987651 Kundenstadt
+Kunden-Nr.:
+00000001
+Rehnungsdatum:
+10.08.2021
+Ihr Auftrag vom:
+05.07.2021
+Ausführung:
+20.07.2021
+Unser Zeichen:
+ST/WE
+Ihr Zeichen:
+93815/08152
+Rechnung
+Seite:
+1/1
+Pos.Bezeichnung
+Menge Einh.
+E-Preis€
+G-Preis€
+Auftragsbestatigung Beleg:200036 vom:05.07.2021
+Angebot Beleg: 100198 vom: 30.06.2021
+Materialaufwand:
+00001Wechselschalter APw
+2,00 Stk
+12,24
+24,48
+00002 Steckdose 1F APw
+3,00 Stk
+10,17
+30,51
+00003 Abzweigdose 80x80 APw
+2,00Stk
+1,19
+2,38
+00004FR 22110020 Rohr isofix-EL-F 20
+12,00m
+0,97
+11,64
+00005Leitung NYM-J 3x1,5
+25,00m
+0,82
+20,50
+00006Leitung NYM-J 5x1,5
+15,00m
+1,21
+18,15
+000071
+Langfeldleuchte 1x58W
+51,79
+2,00Stk
+103,58
+00008Bewegungsmelder APw
+1,00 Stk
+124,50
+124,50
+00009FR 22370020 Schele clipfix 20
+35,00 Stk
+0,44
+15,40
+Lohnaufwand:
+00010 Monteur
+4,50 Std
+179,10
+39,80
+00011 Auszubildender
+4.50Std
+28,00
+126,00*
+Vielen Dank für Ihren Auftrag.
+Warenwert Netto€
+Fracht/Porto @
+Verpackung €
+Stpfl.Betrag €
+Steuerfrei €
+Ust 19.00%
+656,24
+Endbetrag€
+0,00
+0,00
+656,24
+124,69
+0,00
+780,93
+Zahlbar bis zum 17.08.2021 mit 2,00% Skonto.Rechnungsbetrag nach Abzug Skonto 772,57@.
+Bei Zahlung bis zum 24.08.2021 ohne Abzug.
+Die Ware bleibt bis zur vollständigen Bezahlung unser Eigentum!
+* = nicht skontierfähig
+Tel: +49 123 456789-0
+SWIFT-BIC:SOLAD
+700000778800
+ec.de
+cht Muster
+internetwww.treit-datec.d
